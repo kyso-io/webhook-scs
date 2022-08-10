@@ -1,0 +1,82 @@
+= Webhook SCS docker image for Kyso
+
+This container provides a mechanism to execute scripts on the `kyso-scs` pod
+using the https://github.com/adnanh/webhook[webhook] command.
+
+Initially the container includes only two scripts:
+
+- `du.sh`: Simple script to run `du` on organization/team folders (if only the
+  organzation is passed all the teams are shown).
+
+- `hardlink.sh`: Script to run the
+  https://github.com/util-linux/util-linux/blob/master/misc-utils/hardlink.1.adoc[hardlink]
+  command from https://github.com/util-linux/util-linux[util-linux] inside the
+  SCS data directory to replace duplicated files by hardlinks (saves a lot of
+  disk space when files in different versions don't change).
+
+== Environment variables
+
+- `WEBHOOK_WORKDIR`: Unix PATH to the main SCS directory, the value is required
+  and usually will be inside the mount point of the `datadir` volume (i.e. if
+  the volume is mounted in `/sftp` the `WEBHOOK_WORKDIR` will be
+  `/sftp/data/scs`).
+
+- `COMMON_TOKEN`: Token expected in the `X-Webhook-Token` header when there is
+  no specific token defined; if the variable is not present and the specific
+  token is not available the webhook does not require authentication.
+
+- `DU_TOKEN`: Token expected in the `X-Webhook-Token` header when calling the
+  `du.sh` script; if the variable is not present the `COMMON_TOKEN` is used.
+
+- `HARDLINK_TOKEN`: Token expected in the `X-Webhook-Token` header when calling
+  the `hardlink.sh` script; if the variable is not present the `COMMON_TOKEN`
+  is used.
+
+== Adding the container to kyso-scs
+
+=== Container definition on the statefulset
+
+The container definition for the `StatefulSet` template will be something like
+the following:
+
+[source,yaml]
+----
+  - name: webhook
+    image: __SCS_WEBHOOK_IMAGE__
+    imagePullPolicy: "__IMAGE_PULL_POLICY__"
+    ports:
+    - containerPort: 9000
+      name: webhook-http
+    env:
+    - name: WEBHOOK_WORKDIR
+      value: /sftp/data/scs
+    volumeMounts:
+    - mountPath: /sftp
+      name: __APP__-datadir
+----
+
+Basically we mount the datadir and adjust the WEBHOOK_WORKDIR and publish the
+port `9000`.
+
+=== Adding the port to the service definition
+
+To be able to access the service we have to add the new service to the `ports`
+spec on the service template:
+
+[source,yaml]
+----
+  - name: webhook-http                                                                                                                                                                
+    port: 9000                                                                                                                                                                        
+    protocol: TCP                                                                                                                                                                     
+    targetPort: 9000                                                                                                                                                                  
+----
+
+Once that is defined the hooks can be accessed using URLs of the form
+`http://kyso-scs-svc.$KYSO_SCS_NAMESPACE.svc.cluster.local:9000/hook/{id}`,
+where `id` can be `du` or `hardlink`.
+
+With the default configuration the `organization` and optional `team` that have 
+to be passed to the command using query parameters `org` and `team`, i.e.
+`http://kyso-scs-svc.$ns.svc.cluster.local:9000/hook/du?org=kyso&team=sto`.
+
+// vim: ts=2:sw=2:et
