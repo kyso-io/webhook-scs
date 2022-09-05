@@ -120,6 +120,7 @@ fi
 # is the default)
 DU_TOKEN="${DU_TOKEN:-$COMMON_TOKEN}"
 HARDLINK_TOKEN="${HARDLINK_TOKEN:-$COMMON_TOKEN}"
+S3_TOKEN="${S3_TOKEN:-$COMMON_TOKEN}"
 
 # Create webhook configuration
 { 
@@ -128,6 +129,12 @@ HARDLINK_TOKEN="${HARDLINK_TOKEN:-$COMMON_TOKEN}"
   echo ""
   print_hardlink_yml
   print_token_yml "$HARDLINK_TOKEN"
+  echo ""
+  print_s3mount_yml
+  print_token_yml "$S3_TOKEN"
+  echo ""
+  print_s3umount_yml
+  print_token_yml "$S3_TOKEN"
 }>"$WEBHOOK_YML"
 
 # Run the webhook command
