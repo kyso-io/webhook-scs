@@ -1,5 +1,5 @@
 ARG ALPINE_VERSION
-FROM registry.kyso.io/docker/alpine:$ALPINE_VERSION
+FROM alpine:$ALPINE_VERSION
 LABEL maintainer="Sergio Talens-Oliag <sto@kyso.io>"
 RUN apk update &&\
  apk add --no-cache mailcap util-linux-misc webhook &&\
