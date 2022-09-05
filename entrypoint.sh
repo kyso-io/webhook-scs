@@ -60,15 +60,15 @@ print_s3mount_yml() {
   pass-environment-to-command:
   - source: 'payload'
     envname: 'AWS_KEY'
-	name: 'aws.key'
+    name: 'aws.key'
   - source: 'payload'
     envname: 'AWS_SECRET_KEY'
-	name: 'aws.secret_key'
+    name: 'aws.secret_key'
   - source: 'payload'
-	envname: 'S3_BUCKET'
+    envname: 'S3_BUCKET'
     name: 's3.bucket'
   - source: 'payload'
-	envname: 'S3_REGION'
+    envname: 'S3_REGION'
     name: 's3.region'
 EOF
 }
