@@ -49,6 +49,40 @@ EOF
 }
 
 
+print_s3import_yml() {
+  cat <<EOF
+- id: s3mount
+  execute-command: '$WEBHOOK_BIN/s3import.sh'
+  command-working-directory: '$WORKDIR'
+  http-methods: ['POST']
+  include-command-output-in-response: true
+  include-command-output-in-response-on-error: true
+  pass-environment-to-command:
+  - source: 'payload'
+    envname: 'KYSO_USERNAME'
+    name: 'kyso.username'
+  - source: 'payload'
+    envname: 'KYSO_TOKEN'
+    name: 'kyso.token'
+  - source: 'payload'
+    envname: 'S3PATH'
+    name: 'import.s3path'
+  - source: 'payload'
+    envname: 'AUTHOR'
+    name: 'import.author'
+  - source: 'payload'
+    envname: 'CHANNEL'
+    name: 'import.channel'
+  - source: 'payload'
+    envname: 'MAPPINGS'
+    name: 'import.mappings'
+  - source: 'payload'
+    envname: 'ORGANIZATION'
+    name: 'import.organization'
+EOF
+}
+
+
 print_s3mount_yml() {
   cat <<EOF
 - id: s3mount
@@ -129,6 +163,9 @@ S3_TOKEN="${S3_TOKEN:-$COMMON_TOKEN}"
   echo ""
   print_hardlink_yml
   print_token_yml "$HARDLINK_TOKEN"
+  echo ""
+  print_s3import_yml
+  print_token_yml "$S3_TOKEN"
   echo ""
   print_s3mount_yml
   print_token_yml "$S3_TOKEN"
