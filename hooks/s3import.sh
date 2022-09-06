@@ -28,5 +28,4 @@ IMPORT_ARGS="--path '$IMPORT_PATH'"
 [ "$CHANNEL" ] && IMPORT_ARGS="$IMPORT_ARGS --channel '$CHANNEL'"
 [ "$AUTHOR" ] && IMPORT_ARGS="$IMPORT_ARGS --author '$AUTHOR'"
 [ "$MAPPINGS" ] && IMPORT_ARGS="$IMPORT_ARGS --mappings '$MAPPINGS'"
-# shellcheck disable=SC2086,SC2090
-kyso import $IMPORT_ARGS
+eval "kyso import $IMPORT_ARGS"
