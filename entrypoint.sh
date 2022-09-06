@@ -51,7 +51,7 @@ EOF
 
 print_s3import_yml() {
   cat <<EOF
-- id: s3mount
+- id: s3import
   execute-command: '$WEBHOOK_BIN/s3import.sh'
   command-working-directory: '$WORKDIR'
   http-methods: ['POST']
