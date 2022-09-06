@@ -58,6 +58,9 @@ print_s3import_yml() {
   include-command-output-in-response: true
   include-command-output-in-response-on-error: true
   pass-environment-to-command:
+  - source: 'string'
+    envname: 'KYSO_URL'
+    name: '$KYSO_URL'
   - source: 'payload'
     envname: 'KYSO_USERNAME'
     name: 'kyso.username'
