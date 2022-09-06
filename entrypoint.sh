@@ -57,6 +57,9 @@ print_s3import_yml() {
   http-methods: ['POST']
   include-command-output-in-response: true
   include-command-output-in-response-on-error: true
+  pass-arguments-to-command:
+  - source: 'url'
+    name: 'verbose'
   pass-environment-to-command:
   - source: 'string'
     envname: 'KYSO_URL'

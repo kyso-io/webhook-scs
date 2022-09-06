@@ -24,6 +24,11 @@ kyso login -y "$URL" -r "kyso" -u "$USER" -k "$TOKEN"
 # Call the import function
 # shellcheck disable=SC2089
 IMPORT_ARGS="--path '$IMPORT_PATH'"
+if [ "$#" -gt "0" ]; then
+  if [ "$1" = "true" ] || [ "$1" = "verbose" ]; then
+    IMPORT_ARGS="$IMPORT_ARGS --verbose"
+  fi
+fi
 [ "$ORGANIZATION" ] && IMPORT_ARGS="$IMPORT_ARGS --organization '$ORGANIZATION'"
 [ "$CHANNEL" ] && IMPORT_ARGS="$IMPORT_ARGS --channel '$CHANNEL'"
 [ "$AUTHOR" ] && IMPORT_ARGS="$IMPORT_ARGS --author '$AUTHOR'"
