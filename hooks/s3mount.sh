@@ -29,3 +29,4 @@ echo "${AWS_KEY}:${AWS_SECRET_KEY}" >"$HOME/.passwd-s3fs"
 # Mount s3 bucket as a filesystem
 /usr/bin/s3fs -o dbglevel=info,retries=5 -o "${EP_URL}" "${S3_BUCKET}" \
   "${MNT_POINT}"
+echo "Mounted bucket '$S3_BUCKET' on '${MNT_POINT}'"
