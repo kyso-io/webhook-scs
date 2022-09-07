@@ -104,43 +104,6 @@ EOF
 }
 
 
-print_s3mount_yml() {
-  cat <<EOF
-- id: s3mount
-  execute-command: '$WEBHOOK_BIN/s3mount.sh'
-  command-working-directory: '$WORKDIR'
-  http-methods: ['POST']
-  include-command-output-in-response: true
-  include-command-output-in-response-on-error: true
-  pass-environment-to-command:
-  - source: 'payload'
-    envname: 'AWS_KEY'
-    name: 'aws.key'
-  - source: 'payload'
-    envname: 'AWS_SECRET_KEY'
-    name: 'aws.secret_key'
-  - source: 'payload'
-    envname: 'S3_BUCKET'
-    name: 's3.bucket'
-  - source: 'payload'
-    envname: 'S3_REGION'
-    name: 's3.region'
-EOF
-}
-
-
-print_s3umount_yml() {
-  cat <<EOF
-- id: s3umount
-  execute-command: '$WEBHOOK_BIN/s3umount.sh'
-  command-working-directory: '$WORKDIR'
-  http-methods: ['GET']
-  include-command-output-in-response: true
-  include-command-output-in-response-on-error: true
-EOF
-}
-
-
 print_token_yml() {
   if [ "$1" ]; then
     cat << EOF
@@ -187,12 +150,6 @@ S3_TOKEN="${S3_TOKEN:-$COMMON_TOKEN}"
   echo ""
   print_s3import_yml
   print_token_yml "$S3_TOKEN"
-#  echo ""
-#  print_s3mount_yml
-#  print_token_yml "$S3_TOKEN"
-#  echo ""
-#  print_s3umount_yml
-#  print_token_yml "$S3_TOKEN"
 }>"$WEBHOOK_YML"
 
 # Run the webhook command
