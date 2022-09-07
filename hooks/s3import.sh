@@ -63,6 +63,7 @@ if [ "$ret" -eq "0" ]; then
   [ "$CHANNEL" ] && IMPORT_ARGS="$IMPORT_ARGS --channel '$CHANNEL'"
   [ "$AUTHOR" ] && IMPORT_ARGS="$IMPORT_ARGS --author '$AUTHOR'"
   [ "$MAPPINGS" ] && IMPORT_ARGS="$IMPORT_ARGS --mappings '$MAPPINGS'"
+  [ "$FORCE" = "true" ] && IMPORT_ARGS="$IMPORT_ARGS --force"
   # Call the import function
   eval "kyso import $IMPORT_ARGS" || ret="$?"
 fi
