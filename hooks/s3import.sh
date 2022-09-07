@@ -18,26 +18,29 @@ if [ "$S3_REGION" ] && [ "$S3_REGION" != "us-east-1" ]; then
 else
 	EP_URL="endpoint=us-east-1"
 fi
-# Check moutpoint
-MNT_POINT="${MNT_POINT:-/webhook/s3data}"
+# Prepare working directory
+WORK_DIR="$(mktemp -p "$HOME" -d)"
+MNT_POINT="$WORK_DIR/s3data"
+PASSWD_S3FS="$WORK_DIR/.passwd-s3fs"
+export KYSO_DATA_DIR="$WORK_DIR/kyso"
+# Check the moutpoint
 if [ ! -d "${MNT_POINT}" ]; then
-	mkdir -p "${MNT_POINT}"
+  mkdir -p "${MNT_POINT}"
 elif mountpoint "${MNT_POINT}"; then
-	echo "There is already something mounted on '${MNT_POINT}', aborting!"
-	exit 1
+  echo "There is already something mounted on '${MNT_POINT}', aborting!"
+  exit 1
 fi
 # Create password file
-touch "$HOME/.passwd-s3fs"
-chmod 0400 "$HOME/.passwd-s3fs"
-echo "${AWS_KEY}:${AWS_SECRET_KEY}" >"$HOME/.passwd-s3fs"
+touch "$PASSWD_S3FS"
+chmod 0400 "$PASSWD_S3FS"
+echo "${AWS_KEY}:${AWS_SECRET_KEY}" >"$PASSWD_S3FS"
 # Mount s3 bucket as a filesystem
-/usr/bin/s3fs -o dbglevel=info,retries=5 -o "${EP_URL}" "${S3_BUCKET}" \
-  "${MNT_POINT}"
+/usr/bin/s3fs -o dbglevel=info,retries=5 -o "${EP_URL}" \
+  -o "passwd_file=${PASSWD_S3FS}" "${S3_BUCKET}" "${MNT_POINT}"
 echo "Mounted bucket '$S3_BUCKET' on '${MNT_POINT}'"
 # Remove the password file, just in case
-rm -f "$HOME/.passwd-s3fs"
+rm -f "${PASSWD_S3FS}"
 # Check import path
-MNT_POINT="${MNT_POINT:-/webhook/s3data}"
 IMPORT_PATH="$MNT_POINT/$S3PATH"
 if [ ! -d "${IMPORT_PATH}" ]; then
   echo "The S3PATH '$S3PATH' can't be found!"
@@ -70,6 +73,11 @@ fi
 # Unmount the S3 bucket
 umount -f "${MNT_POINT}"
 echo "Called umount for '${MNT_POINT}'"
-# Remove kyso auth data
-rm -f "$HOME/.kyso/auth.json"
+# Remove kyso data dir
+rm -rf "$KYSO_DATA_DIR"
+# Remove mount point dir
+rmdir "$MNT_POINT"
+# Remove WORK_DIR
+rmdir "$WORK_DIR"
+# Exit
 exit "$ret"
