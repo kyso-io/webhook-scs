@@ -61,6 +61,18 @@ print_s3import_yml() {
   - source: 'url'
     name: 'verbose'
   pass-environment-to-command:
+  - source: 'payload'
+    envname: 'AWS_KEY'
+    name: 'aws.key'
+  - source: 'payload'
+    envname: 'AWS_SECRET_KEY'
+    name: 'aws.secret_key'
+  - source: 'payload'
+    envname: 'S3_BUCKET'
+    name: 's3.bucket'
+  - source: 'payload'
+    envname: 'S3_REGION'
+    name: 's3.region'
   - source: 'string'
     envname: 'KYSO_URL'
     name: '$KYSO_URL'
@@ -172,12 +184,12 @@ S3_TOKEN="${S3_TOKEN:-$COMMON_TOKEN}"
   echo ""
   print_s3import_yml
   print_token_yml "$S3_TOKEN"
-  echo ""
-  print_s3mount_yml
-  print_token_yml "$S3_TOKEN"
-  echo ""
-  print_s3umount_yml
-  print_token_yml "$S3_TOKEN"
+#  echo ""
+#  print_s3mount_yml
+#  print_token_yml "$S3_TOKEN"
+#  echo ""
+#  print_s3umount_yml
+#  print_token_yml "$S3_TOKEN"
 }>"$WEBHOOK_YML"
 
 # Run the webhook command
