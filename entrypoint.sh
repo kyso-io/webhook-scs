@@ -99,6 +99,7 @@ print_s3import_yml() {
   - source: 'payload'
     envname: 'ORGANIZATION'
     name: 'import.organization'
+  stream-command-output: true
 EOF
 }
 
