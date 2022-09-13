@@ -63,3 +63,4 @@ else
   # Print du output as is
   echo "$OUTPUT"
 fi
+# vim: ts=2:sw=2:et:ai:sts=2

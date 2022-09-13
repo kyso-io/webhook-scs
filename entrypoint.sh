@@ -159,4 +159,4 @@ case "$1" in
 *) exec "$@" ;;
 esac
 
-# vim: ts=2:sw=2:et
+# vim: ts=2:sw=2:et:ai:sts=2
