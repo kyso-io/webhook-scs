@@ -1,4 +1,5 @@
 ARG ALPINE_VERSION
+ARG KYSO_VERSION
 
 FROM registry.kyso.io/docker/golang:alpine$ALPINE_VERSION AS builder
 LABEL maintainer="Sergio Talens-Oliag <sto@kyso.io>"
@@ -34,7 +35,7 @@ WORKDIR /webhook
 RUN apk update &&\
  apk add --no-cache ca-certificates mailcap fuse libxml2 libcurl libgcc\
  libstdc++ rsync nodejs npm util-linux-misc &&\
- npm install -g kyso &&\
+ npm install -g kyso@$KYSO_VERSION &&\
  rm -rf /var/cache/apk/*
 COPY --from=builder /usr/local/bin/webhook /usr/local/bin/webhook
 COPY --from=builder /usr/local/bin/s3fs /usr/local/bin/s3fs
