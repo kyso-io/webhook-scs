@@ -14,6 +14,24 @@ WEBHOOK_OPTS="${WEBHOOK_OPTS:--verbose}"
 # FUNCTIONS
 # ---------
 
+print_cl_yml() {
+  cat <<EOF
+- id: cl
+  execute-command: '$WEBHOOK_BIN/cl.sh'
+  command-working-directory: '$WORKDIR'
+  http-methods: ['GET']
+  include-command-output-in-response: true
+  include-command-output-in-response-on-error: true
+  pass-arguments-to-command:
+  - source: 'url'
+    name: 'file'
+  - source: 'url'
+    name: 'beg'
+  - source: 'url'
+    name: 'end'
+EOF
+}
+
 print_du_yml() {
   cat <<EOF
 - id: du
@@ -128,14 +146,18 @@ exec_webhook() {
     echo "The WEBHOOK_WORKDIR '$WEBHOOK_WORKDIR' is not a directory!" >&2
     exit 1
   fi
-  # Get TOKENS, if the DU_TOKEN or HARDLINK_TOKEN is defined that is used, if not
-  # if the COMMON_TOKEN that is used and in other case no token is checked (that
-  # is the default)
+  # Get TOKENS, if the ${SCRIPT}_TOKEN is defined that is used, if not if the
+  # COMMON_TOKEN that is used and in other case no token is checked (that is
+  # the default)
+  CL_TOKEN="${CL_TOKEN:-$COMMON_TOKEN}"
   DU_TOKEN="${DU_TOKEN:-$COMMON_TOKEN}"
   HARDLINK_TOKEN="${HARDLINK_TOKEN:-$COMMON_TOKEN}"
   S3_TOKEN="${S3_TOKEN:-$COMMON_TOKEN}"
   # Create webhook configuration
   {
+    print_cl_yml
+    print_token_yml "$CL_TOKEN"
+    echo ""
     print_du_yml
     print_token_yml "$DU_TOKEN"
     echo ""
