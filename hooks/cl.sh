@@ -26,6 +26,10 @@ fi
 if [ ! -f "$FILE" ]; then
   print_error "File '$FILE' not found!"
 fi
+FILE_PATH="$(realpath "$FILE" 2>/dev/null)" || true
+if [ "$FILE_PATH" = "${FILE_PATH#"$(pwd)"}" ]; then
+  print_error "File '$FILE' is outside my working directory"
+fi
 if [ -z "$BEG" ]; then
   if [ -z "$END" ]; then
     # if no range was passed, print the number of lines
