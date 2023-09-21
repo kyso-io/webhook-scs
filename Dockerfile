@@ -1,7 +1,7 @@
-ARG ALPINE_VERSION
-ARG KYSO_VERSION
+ARG ALPINE_VERSION=3.16
+ARG KYSO_VERSION=1.9.10
 
-FROM registry.kyso.io/docker/golang:alpine$ALPINE_VERSION AS builder
+FROM golang:alpine$ALPINE_VERSION AS builder
 LABEL maintainer="Sergio Talens-Oliag <sto@kyso.io>"
 ENV WEBHOOK_VERSION 2.8.0
 ENV WEBHOOK_PR 549
@@ -29,7 +29,7 @@ RUN curl -L --silent -o s3fs.tar.gz\
  make -j && \
  make install
 
-FROM registry.kyso.io/docker/alpine:$ALPINE_VERSION
+FROM alpine:$ALPINE_VERSION
 LABEL maintainer="Sergio Talens-Oliag <sto@kyso.io>"
 WORKDIR /webhook
 RUN apk update &&\
